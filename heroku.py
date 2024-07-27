@@ -56,10 +56,11 @@ async def en_download(event, args, client):
                 download, e, download.file_name, event.sender_id
             )
         f_loc = _dir + loc if not link else _dir + download.file_name
-        new_file_name = "video.mp4"
-        new_f_loc = os.path.join(os.path.dirname(f_loc), new_file_name)
-        os.rename(f_loc, new_f_loc)
-        f_loc = new_f_loc
+        if not args.endswith("/"):
+            new_file_name = args  # Use the new file name from args
+            new_f_loc = os.path.join(os.path.dirname(f_loc), new_file_name)
+            os.rename(f_loc, new_f_loc)
+            f_loc = new_f_loc
         await e.edit(f"__Saved to__ `{f_loc}` __successfully!__")
     except Exception:
         await logger(Exception)
