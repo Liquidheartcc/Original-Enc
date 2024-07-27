@@ -145,6 +145,7 @@ async def en_download(event, args, client):
                 ["--home", "store_true"],
                 ["--cap", "store_true"],
                 "--dir",
+                ["-n", "store_true"],
                 to_parse=args,
                 get_unknown=True,
             )
@@ -158,11 +159,14 @@ async def en_download(event, args, client):
                 _dir = arg.dir
             if arg.cap and not message.text:
                 loc = message.caption
-        link = message.text if message.text else link
-        if not loc:
-            loc = rep_event.file.name if not link else link
-        _dir = "downloads/" if not _dir else _dir
-        _dir += str() if _dir.endswith("/") else "/"
+            link = message.text if message.text else link
+            if not loc:
+                loc = rep_event.file.name if not link else link
+            # Check for -n flag and get the filename
+            if arg.n and len(args) > 0:
+                loc = args[0]
+            _dir = "downloads/" if not _dir else _dir
+            _dir += str() if _dir.endswith("/") else "/"
         await try_delete(event)
         d_id = f"{e.chat.id}:{e.id}"
         download = downloader(_id=d_id, uri=link, folder=_dir)
